@@ -1,0 +1,114 @@
+﻿<Window x:Class="Testing02.Produk"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Testing02"
+        mc:Ignorable="d"
+        Title="Produk" Height="500" Width="800">
+    <Grid>
+        <Border>
+            <StackPanel>
+                <!-- ID Produk & ID Pegawai -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="ID Produk" Margin="10" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="15"></TextBlock>
+                    <TextBox x:Name="IdProdukText" Margin="10" Padding="3 3" Grid.Column="1" BorderBrush="Black"></TextBox>
+
+                    <TextBlock Text="ID Pegawai" Margin="10" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="15"></TextBlock>
+                    <TextBox x:Name="IdPegawaiText" Margin="10" Padding="3 3" Grid.Column="3" BorderBrush="Black"></TextBox>
+                    
+                </Grid>
+
+                <!-- Nama Produk -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Nama Produk" Margin="10" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="15"></TextBlock>
+                    <TextBox x:Name="NamaProdukText" Margin="10" Padding="3 3" Grid.Column="1" BorderBrush="Black"></TextBox>
+                </Grid>
+
+                <!--Harga Produk -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Harga Produk" Margin="10" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="15"></TextBlock>
+                    <TextBox x:Name="HargaProdukText" Margin="10" Padding="3 3" Grid.Column="1" BorderBrush="Black"></TextBox>
+                </Grid>
+
+                <!-- Jumlah Produk-->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Jumlah Produk" Margin="10" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="15"></TextBlock>
+                    <TextBox x:Name="JumlahProdukText" Margin="10" Padding="3 3" Grid.Column="1" BorderBrush="Black"></TextBox>
+                </Grid>
+
+                <!-- Jumlah Minimum Produk -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Jumlah Minimum Produk" Margin="10" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="15"></TextBlock>
+                    <TextBox x:Name="JumlahMinimumProdukText" Margin="10" Padding="3 3" Grid.Column="1" BorderBrush="Black"></TextBox>
+                </Grid>
+
+                <!-- Gambar Produk -->
+                <Grid Height="50">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Gambar Produk" Margin="10" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="15"></TextBlock>
+                    <Image x:Name="GambarProduk" Grid.Column="1">
+                        
+                    </Image>
+                    <Button x:Name="BrowseButton" Content="Browse" Grid.Column="2" Background="Gray" Margin="10" Click="BrowseButton_Click" />
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="TambahButton" Grid.Column="0" Content="Tambah" Margin="10" Background="Gray" Click="TambahButton_Click"/>
+                    <Button x:Name="UbahButton" Grid.Column="1" Content="Ubah" Margin="10" Background="Gray" Click="UbahButton_Click"/>
+                    <Button x:Name="HapusButton" Grid.Column="2" Content="Hapus" Margin="10" Background="Gray" Click="HapusButton_Click"/>
+                    <Button x:Name="TampilButton" Grid.Column="3" Content="Ubah" Margin="10" Background="Gray" Click="TampilButton_Click"/>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- IsReadOnly buat datagrid tidak bisa diedit -->
+                    <DataGrid x:Name="DataGrid" Grid.Column="2" AutoGenerateColumns="True" ItemsSource="{Binding}" Margin="10 10" IsReadOnly="True" SelectionChanged="DataGrid_SelectionChanged" />
+                    
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
