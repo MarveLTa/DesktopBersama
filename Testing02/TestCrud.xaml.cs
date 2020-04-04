@@ -19,13 +19,13 @@ namespace Testing02
     /// <summary>
     /// Interaction logic for TestCrud.xaml
     /// </summary>
-    public partial class TestCrud : Window
+    public partial class TestCrud : UserControl
     {
 
         // Untuk konek ke database
         //Bisa gini
         // Convert/Allow Zero Datetime digunakan untuk menampilkan date yang punya jam waktu
-        MySqlConnection conn = new MySqlConnection("Server=localhost; User Id=root;Password=;Database=9148;Allow Zero Datetime=True");
+        MySqlConnection conn = new MySqlConnection("Server=localhost; User Id=root;Password=;Database=petshop;Allow Zero Datetime=True");
         MySqlDataAdapter adapter = new MySqlDataAdapter();
 
         // Atau gini
@@ -40,8 +40,8 @@ namespace Testing02
         {
             InitializeComponent();
             TampilDataGrid();
-           
         }
+
 
         private void TampilDataGrid()
         {
@@ -64,20 +64,40 @@ namespace Testing02
 
         private void TambahButton_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if(NamaJenisHewanText.Text == "")
             {
-                ds = new DataSet();
-                adapter = new MySqlDataAdapter("insert into jenis_hewan(ID_JENIS_HEWAN, ID_PEGAWAI, NAMA_JENIS, CREATED_AT, UPDATE_AT, DELETE_AT, CREATED_BY, UPDATED_BY) VALUES('" + IdJenisHewanText.Text + "','" + IdJenisPegawaiText.Text + "','" + NamaJenisHewanText.Text + "','" + "2019-12-03" + "','" + "2019-12-03" + "','" + "2019-12-03" + "', '" + null + "','" + null + "')", conn);
-                adapter.Fill(ds, "jenis_hewan");
-                GetRecords();
-                MessageBox.Show("Berhasil Ditambahkan!");
-                IdJenisHewanText.Clear();
-                IdJenisPegawaiText.Clear();
-                NamaJenisHewanText.Clear();
+                MessageBox.Show("Please input all the data");
             }
-            catch (Exception d)
+            else
             {
-                MessageBox.Show(d.Message);
+                try
+                {
+                    /*
+                    ds = new DataSet();
+                    adapter = new MySqlDataAdapter("insert into jenis_hewan(NAMA_JENIS, CREATED_AT, UPDATE_AT, DELETE_AT, CREATED_BY, UPDATED_BY) VALUES('" + IdJenisHewanText.Text + "','" + IdPegawaiText.Text + "','" + NamaJenisHewanText.Text + "','" + "2019-12-03" + "','" + "2019-12-03" + "','" + "2019-12-03" + "', '" + null + "','" + null + "')", conn);
+                    adapter.Fill(ds, "jenis_hewan");
+                    GetRecords();
+                    MessageBox.Show("Berhasil Ditambahkan!");
+                    IdJenisHewanText.Clear();
+                    IdPegawaiText.Clear();
+                    NamaJenisHewanText.Clear();
+                    */
+                    conn.Open();
+                    using(MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.CommandText = "insert into jenis_hewan(NAMA_JENIS) VALUES(@namajenis)";
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Connection = conn;
+
+                        cmd.Parameters.AddWithValue("@namajenis", NamaJenisHewanText.Text);
+                        cmd.ExecuteNonQuery();
+                        conn.Close();
+                    }
+                }
+                catch (Exception d)
+                {
+                    MessageBox.Show(d.Message);
+                }
             }
         }
 
@@ -103,12 +123,12 @@ namespace Testing02
             try
             {
                 ds = new DataSet();
-                adapter = new MySqlDataAdapter("update jenis_hewan set ID_PEGAWAI = '" + IdJenisPegawaiText.Text + "', NAMA_JENIS = '" + NamaJenisHewanText.Text + "'where ID_JENIS_HEWAN = " + IdJenisHewanText.Text + "", conn);
+                adapter = new MySqlDataAdapter("update jenis_hewan set ID_PEGAWAI = '" + IdPegawaiText.Text + "', NAMA_JENIS = '" + NamaJenisHewanText.Text + "'where ID_JENIS_HEWAN = " + IdJenisHewanText.Text + "", conn);
                 adapter.Fill(ds, "jenis_hewan");
                 GetRecords();
                 MessageBox.Show("Berhasil Diedit!");
                 IdJenisHewanText.Clear();
-                IdJenisPegawaiText.Clear();
+                IdPegawaiText.Clear();
                 NamaJenisHewanText.Clear();
             }
             catch(Exception d)
@@ -125,7 +145,7 @@ namespace Testing02
             {
                 IdJenisHewanText.Text = selected_row["ID_JENIS_HEWAN"].ToString();
                 IdJenisHewanText.IsReadOnly = true;
-                IdJenisPegawaiText.Text = selected_row["ID_PEGAWAI"].ToString();
+                IdPegawaiText.Text = selected_row["ID_PEGAWAI"].ToString();
                 NamaJenisHewanText.Text = selected_row["NAMA_JENIS"].ToString();
             }
         }
@@ -140,7 +160,7 @@ namespace Testing02
                 GetRecords();
                 MessageBox.Show("Berhasil Dihapus!");
                 IdJenisHewanText.Clear();
-                IdJenisPegawaiText.Clear();
+                IdPegawaiText.Clear();
                 NamaJenisHewanText.Clear();
             }
             catch(Exception d)
@@ -149,12 +169,12 @@ namespace Testing02
             }
         }
 
-        private void ButtonProduk_Click(object sender, RoutedEventArgs e)
+       private void ButtonProduk_Click(object sender, RoutedEventArgs e)
         {
-            var NewProduk = new Produk();
-            NewProduk.Show();
+            //var NewProduk = new Produk();
+           // NewProduk.Show();
            // Deactivated();
-            this.Close();
+            //this.Close();
         }
     }
 }

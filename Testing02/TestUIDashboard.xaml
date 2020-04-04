@@ -45,7 +45,11 @@
                     <Button x:Name="ButtonOpenMenu" Width="35" Height="30" VerticalAlignment="Center" HorizontalAlignment="Right" Background="black" BorderBrush="{x:Null}" Click="ButtonOpenMenu_Click"/>
                 </Grid>
                 <Grid>
-                    <Button Height="25" Width="25" Margin="10" Foreground="#FF110413">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="13*"/>
+                        <ColumnDefinition Width="7*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Height="25" Width="25" Margin="18,10" Foreground="#FF110413" Grid.ColumnSpan="2">
                         <Button.Background>
                             <ImageBrush ImageSource="coba.jpg"/>
                         </Button.Background>

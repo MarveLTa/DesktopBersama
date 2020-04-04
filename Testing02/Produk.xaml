@@ -82,7 +82,7 @@
                         <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="Gambar Produk" Margin="10" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="15"></TextBlock>
-                    <Image x:Name="GambarProduk" Grid.Column="1">
+                    <Image x:Name="GambarProduk" Grid.Column="1" >
                         
                     </Image>
                     <Button x:Name="BrowseButton" Content="Browse" Grid.Column="2" Background="Gray" Margin="10" Click="BrowseButton_Click" />
@@ -105,8 +105,18 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <!-- IsReadOnly buat datagrid tidak bisa diedit -->
-                    <DataGrid x:Name="DataGrid" Grid.Column="2" AutoGenerateColumns="True" ItemsSource="{Binding}" Margin="10 10" IsReadOnly="True" SelectionChanged="DataGrid_SelectionChanged" />
-                    
+                    <DataGrid x:Name="DataGrid" Grid.Column="2" AutoGenerateColumns="True" ItemsSource="{Binding}" Margin="10 10" IsReadOnly="True" SelectionChanged="DataGrid_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Source="{Binding GambarProduk}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
                 </Grid>
             </StackPanel>
         </Border>

@@ -1,11 +1,10 @@
-﻿<Window x:Class="Testing02.TestCrud"
+﻿<UserControl x:Class="Testing02.TestCrud"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Testing02"
-        mc:Ignorable="d"
-        Title="TestCrud" Height="500" Width="800" WindowStartupLocation="CenterScreen">
+        mc:Ignorable="d">
     <Border>
         <StackPanel>
             <!-- ID Jenis Hewan -->
@@ -28,7 +27,7 @@
                     <ColumnDefinition Width="2*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="ID JENIS PEGAWAI" Margin="10 10"></TextBlock>
-                <TextBox x:Name="IdJenisPegawaiText" Grid.Column="1" Margin="10 10" Padding="3 3"></TextBox>
+                <TextBox x:Name="IdPegawaiText" Grid.Column="1" Margin="10 10" Padding="3 3"></TextBox>
 
                 <!-- IsReadOnly buat datagrid tidak bisa diedit -->
                 <DataGrid x:Name="DataGrid" Grid.Column="2" AutoGenerateColumns="True" ItemsSource="{Binding}" Margin="10 10" IsReadOnly="True" SelectionChanged="DataGrid_SelectionChanged"/>
@@ -60,4 +59,4 @@
             </Grid>
         </StackPanel>
     </Border>
-</Window>
+</UserControl>

@@ -46,6 +46,8 @@
     <Reference Include="MySql.Data, Version=8.0.19.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -64,15 +66,49 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CrudHewan.xaml.cs">
+      <DependentUpon>CrudHewan.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CrudJenisHewan.xaml.cs">
+      <DependentUpon>CrudJenisHewan.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CrudProduk.xaml.cs">
+      <DependentUpon>CrudProduk.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CrudUkuranHewan.xaml.cs">
+      <DependentUpon>CrudUkuranHewan.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Produk.xaml.cs">
       <DependentUpon>Produk.xaml</DependentUpon>
     </Compile>
     <Compile Include="TestCrud.xaml.cs">
       <DependentUpon>TestCrud.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TestGambar.xaml.cs">
+      <DependentUpon>TestGambar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TestUIDashboard.xaml.cs">
       <DependentUpon>TestUIDashboard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TestUiDashboardFix.xaml.cs">
+      <DependentUpon>TestUiDashboardFix.xaml</DependentUpon>
+    </Compile>
+    <Page Include="CrudHewan.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CrudJenisHewan.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CrudProduk.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CrudUkuranHewan.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Learn2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -100,7 +136,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="TestGambar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TestUIDashboard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TestUiDashboardFix.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
