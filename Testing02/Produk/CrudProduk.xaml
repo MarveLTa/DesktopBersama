@@ -24,16 +24,6 @@
                         <TextBox x:Name="IdProdukText" Grid.Column="2" Margin="10 10" Padding="2" VerticalAlignment="Center" IsReadOnly="True"/>
                     </Grid>
 
-                    <Grid Height="50">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="ID Pegawai" Margin="10 10" VerticalAlignment="Center" FontSize="20"/>
-                        <ComboBox x:Name="ComboBoxIdPegawai" Margin="10 10" Grid.Column="1">
-                        </ComboBox>
-                    </Grid>
-
                     <Grid Height="60">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>

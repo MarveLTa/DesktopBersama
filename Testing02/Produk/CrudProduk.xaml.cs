@@ -42,20 +42,20 @@ namespace Testing02
                 connection = "Server=localhost; User Id=root;Password=;Database=petshop;Allow Zero Datetime=True";
                 conn = new MySqlConnection(connection);
                 conn.Open();
-                FillComboBoxPegawai();
                 TampilDataGrid();
                 conn.Close();
             }
             catch (MySqlException e)
             {
                 MessageBox.Show(e.Message, "Warning");
+                return;
             }
         }
 
         private void TampilDataGrid()
         {
             // Tampil data ke dataGrid
-            MySqlCommand cmd = new MySqlCommand("Select ID_PRODUK, ID_PEGAWAI, NAMA_PRODUK, HARGA_PRODUK, JUMLAH_PRODUK, JUMLAH_MINIMUM_PRODUK, GAMBAR_PRODUK from produk", conn);
+            MySqlCommand cmd = new MySqlCommand("Select ID_PRODUK as 'ID PRODUK', NAMA_PRODUK, HARGA_PRODUK, JUMLAH_PRODUK, JUMLAH_MINIMUM_PRODUK, GAMBAR_PRODUK from produk", conn);
             try
             {
                 //conn.Open();
@@ -68,41 +68,16 @@ namespace Testing02
             catch (MySqlException d)
             {
                 MessageBox.Show(d.Message);
-            }
-        }
-
-        public void FillComboBoxPegawai()
-        {
-            // Ambil ID Pegawai dan Nama Pegawai dari tabel pegawai ke combobox
-            string Query = "select ID_PEGAWAI, NAMA_PEGAWAI from petshop.pegawai;";
-            MySqlCommand cmdComboBox = new MySqlCommand(Query, conn);
-            MySqlDataReader reader;
-            try
-            {
-                reader = cmdComboBox.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    int idPegawai = reader.GetInt32("ID_PEGAWAI");
-                    string namaPegawai = reader.GetString("NAMA_PEGAWAI");
-                    ComboBoxIdPegawai.Items.Add(idPegawai + " - " + namaPegawai);
-                    // ComboBoxIdPegawai.Items.Add(idPegawai);
-                }
-                reader.Close();
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(err.Message);
                 return;
             }
-        }
+        }      
 
         private void NamaProdukText_TextChanged(object sender, TextChangedEventArgs e)
         {
             //Fungsi untuk mencari produk sesuai nama
 
             DataTable dt = new DataTable();
-            MySqlDataAdapter adp = new MySqlDataAdapter("Select ID_PRODUK, ID_PEGAWAI, NAMA_PRODUK, HARGA_PRODUK, JUMLAH_PRODUK, JUMLAH_MINIMUM_PRODUK, GAMBAR_PRODUK from produk where Nama_Produk LIKE '" + NamaProdukText.Text + "%'", conn);
+            MySqlDataAdapter adp = new MySqlDataAdapter("Select ID_PRODUK as 'ID PRODUK', NAMA_PRODUK, HARGA_PRODUK, JUMLAH_PRODUK, JUMLAH_MINIMUM_PRODUK, GAMBAR_PRODUK from produk where Nama_Produk LIKE '" + NamaProdukText.Text + "%'", conn);
             adp.Fill(dt);
             //DataGrid.Items.Refresh();
             DataGrid.DataContext = dt;
@@ -142,12 +117,11 @@ namespace Testing02
 
                         //DataRowView SelectedRowValue = (DataRowView)DataGrid.SelectedValue;
                         //byte[] ImageBytes = (byte[])SelectedRowValue.Row.ItemArray[0];
-                        cmd.CommandText = "INSERT INTO PRODUK(ID_PRODUK, ID_PEGAWAI, NAMA_PRODUK, HARGA_PRODUK, JUMLAH_PRODUK, JUMLAH_MINIMUM_PRODUK, GAMBAR_PRODUK) VALUES(@idproduk, @idpegawai, @namaproduk, @hargaproduk, @jumlahproduk, @jumlahminimum, @gambarproduk)";
+                        cmd.CommandText = "INSERT INTO PRODUK(ID_PRODUK, NAMA_PRODUK, HARGA_PRODUK, JUMLAH_PRODUK, JUMLAH_MINIMUM_PRODUK, GAMBAR_PRODUK) VALUES(@idproduk, @namaproduk, @hargaproduk, @jumlahproduk, @jumlahminimum, @gambarproduk)";
                         cmd.CommandType = CommandType.Text;
                         cmd.Connection = conn;
 
                         cmd.Parameters.AddWithValue("@idproduk", IdProdukText.Text);
-                        cmd.Parameters.AddWithValue("@idpegawai", ComboBoxIdPegawai.SelectedValue);
                         cmd.Parameters.AddWithValue("@namaproduk", NamaProdukText.Text);
                         cmd.Parameters.AddWithValue("@hargaproduk", HargaProdukText.Text);
                         cmd.Parameters.AddWithValue("@jumlahproduk", JumlahProdukText.Text);
@@ -204,7 +178,7 @@ namespace Testing02
                 {
                     conn.Open();
                     ds = new DataSet();
-                    adapter = new MySqlDataAdapter("update produk set ID_PEGAWAI = '" + ComboBoxIdPegawai.SelectedValue + "', NAMA_PRODUK = '" + NamaProdukText.Text + "', HARGA_PRODUK ='" + HargaProdukText.Text + "', JUMLAH_PRODUK = '" + JumlahProdukText.Text + "', JUMLAH_MINIMUM_PRODUK = '" + JumlahMinimumProdukText.Text + "', GAMBAR_PRODUK = '" + GambarProduk + "' where ID_PRODUK = '" + IdProdukText.Text + "'", conn);
+                    adapter = new MySqlDataAdapter("update produk set NAMA_PRODUK = '" + NamaProdukText.Text + "', HARGA_PRODUK ='" + HargaProdukText.Text + "', JUMLAH_PRODUK = '" + JumlahProdukText.Text + "', JUMLAH_MINIMUM_PRODUK = '" + JumlahMinimumProdukText.Text + "', GAMBAR_PRODUK = '" + GambarProduk + "' where ID_PRODUK = '" + IdProdukText.Text + "'", conn);
                     adapter.Fill(ds, "produk");
                     conn.Close();
                     GetRecords();
@@ -248,7 +222,7 @@ namespace Testing02
         private void BtnTampil_Click(object sender, RoutedEventArgs e)
         {
             // Tampil data ke dataGrid
-            MySqlCommand cmd = new MySqlCommand("Select ID_PRODUK, ID_PEGAWAI, NAMA_PRODUK, HARGA_PRODUK, JUMLAH_PRODUK, JUMLAH_MINIMUM_PRODUK, GAMBAR_PRODUK from produk", conn);
+            MySqlCommand cmd = new MySqlCommand("Select ID_PRODUK as 'ID PRODUK', NAMA_PRODUK, HARGA_PRODUK, JUMLAH_PRODUK, JUMLAH_MINIMUM_PRODUK, GAMBAR_PRODUK from produk", conn);
                 try
                 {
                     conn.Open();
@@ -266,7 +240,7 @@ namespace Testing02
 
         private void GetRecords()
         {
-            MySqlCommand cmd = new MySqlCommand("Select ID_PRODUK, ID_PEGAWAI, NAMA_PRODUK, HARGA_PRODUK, JUMLAH_PRODUK, JUMLAH_MINIMUM_PRODUK, GAMBAR_PRODUK from produk", conn);
+            MySqlCommand cmd = new MySqlCommand("Select ID_PRODUK as 'ID PRODUK', NAMA_PRODUK, HARGA_PRODUK, JUMLAH_PRODUK, JUMLAH_MINIMUM_PRODUK, GAMBAR_PRODUK from produk", conn);
             DataGrid.Items.Refresh();
             conn.Open();
             DataTable dt = new DataTable();
@@ -282,11 +256,8 @@ namespace Testing02
             DataRowView selected_row = gd.SelectedItem as DataRowView;
             if (selected_row != null)
             {
-                ComboBoxIdPegawai.SelectedValue = selected_row["ID_PEGAWAI"];
-                IdProdukText.Text = selected_row["ID_PRODUK"].ToString();
+                IdProdukText.Text = selected_row["ID PRODUK"].ToString();
                 NamaProdukText.Text = selected_row["NAMA_PRODUK"].ToString();
-
-                //double HargaProduk = reader
                 HargaProdukText.Text = selected_row["HARGA_PRODUK"].ToString();
                 JumlahProdukText.Text = selected_row["JUMLAH_PRODUK"].ToString();
                 JumlahMinimumProdukText.Text = selected_row["JUMLAH_MINIMUM_PRODUK"].ToString();
@@ -314,6 +285,8 @@ namespace Testing02
                 MemoryStream ms = new MemoryStream();
                 ms.Write(blob, 0, blob.Length);
                 ms.Position = 0;
+                //byteArrayToImage(blob);
+                //GambarProduk.Source = blob;
             }
         }
 
@@ -339,10 +312,9 @@ namespace Testing02
 
         public Image byteArrayToImage(byte[] byteArrayIn)
         {
-            using (var ms = new MemoryStream(byteArrayIn))
-            {
-                return Image.FromStream(ms);
-            }
+            MemoryStream ms = new MemoryStream(byteArrayIn);
+            Image returnImage = Image.FromStream(ms);
+            return returnImage;
         }
         
         public static Bitmap ByteToImage(byte[] blob)

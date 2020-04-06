@@ -37,7 +37,6 @@ namespace Testing02
                 connection = "Server=localhost; User Id=root;Password=;Database=petshop;Allow Zero Datetime=True";
                 conn = new MySqlConnection(connection);
                 conn.Open();
-                FillComboBox();
                 TampilDataGrid();
             }
             catch(MySqlException e)
@@ -45,31 +44,7 @@ namespace Testing02
                 MessageBox.Show(e.Message, "Warning");
             }
         }
-
-        public void FillComboBox()
-        {
-            // Ambil ID Pegawai dan Nama Pegawai dari tabel pegawai ke combobox
-            string Query = "select ID_PEGAWAI, NAMA_PEGAWAI from petshop.pegawai;";
-            MySqlCommand cmdComboBox = new MySqlCommand(Query, conn);
-            MySqlDataReader reader;
-            try
-            {
-                reader = cmdComboBox.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    int idPegawai = reader.GetInt32("ID_PEGAWAI");
-                    string namaPegawai = reader.GetString("NAMA_PEGAWAI");
-                    ComboBoxIdPegawai.Items.Add(idPegawai + " - " + namaPegawai);
-                    // ComboBoxIdPegawai.Items.Add(idPegawai);
-                }
-                reader.Close();
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(err.Message);
-            }
-        }
+        
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -77,7 +52,6 @@ namespace Testing02
             DataRowView selected_row = gd.SelectedItem as DataRowView;
             if (selected_row != null)
             {
-                ComboBoxIdPegawai.SelectedValue = selected_row["ID_PEGAWAI"];
                 NamaJenisHewanText.Text = selected_row["NAMA_JENIS"].ToString();
                 IdJenisHewanText.Text = selected_row["ID_JENIS_HEWAN"].ToString();
             }
@@ -113,11 +87,10 @@ namespace Testing02
                 try
                 {
                     conn.Open();
-                    cmd.CommandText = "INSERT INTO JENIS_HEWAN(ID_PEGAWAI, NAMA_JENIS) VALUES(@idpegawai,@jenis)";
+                    cmd.CommandText = "INSERT INTO JENIS_HEWAN(NAMA_JENIS) VALUES(@jenis)";
                     cmd.CommandType = CommandType.Text;
                     cmd.Connection = conn;
 
-                    cmd.Parameters.AddWithValue("@idpegawai", ComboBoxIdPegawai.SelectedValue);
                     cmd.Parameters.AddWithValue("@jenis", NamaJenisHewanText.Text);
 
 
@@ -141,7 +114,7 @@ namespace Testing02
             {
                 conn.Open();
                 ds = new DataSet();
-                adapter = new MySqlDataAdapter("update jenis_hewan set ID_PEGAWAI = '" + ComboBoxIdPegawai.SelectedValue + "', NAMA_JENIS = '" + NamaJenisHewanText.Text + "'where ID_JENIS_HEWAN = '" + IdJenisHewanText.Text +"'", conn);
+                adapter = new MySqlDataAdapter("update jenis_hewan set NAMA_JENIS = '" + NamaJenisHewanText.Text + "'where ID_JENIS_HEWAN = '" + IdJenisHewanText.Text +"'", conn);
                 adapter.Fill(ds, "jenis_hewan");
                 conn.Close();
                 GetRecords();
@@ -157,27 +130,35 @@ namespace Testing02
 
         private void BtnHapus_Click(object sender, RoutedEventArgs e)
         {
-            using (MySqlCommand cmd = new MySqlCommand())
+            conn.Open();
+            try
             {
-                conn.Open();
-                cmd.CommandText = "DELETE FROM JENIS_HEWAN WHERE ID_JENIS_HEWAN = @idjenis";
-                cmd.CommandType = CommandType.Text;
-                cmd.Connection = conn;
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.CommandText = "DELETE FROM JENIS_HEWAN WHERE ID_JENIS_HEWAN = @idjenis";
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Connection = conn;
 
-                cmd.Parameters.AddWithValue("@idjenis", IdJenisHewanText.Text);
-                cmd.ExecuteNonQuery();
+                    cmd.Parameters.AddWithValue("@idjenis", IdJenisHewanText.Text);
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                    GetRecords();
+                    MessageBox.Show("Berhasil Dihapus!");
+                    NamaJenisHewanText.Clear();
+                    IdJenisHewanText.Clear();
+                }
+            }
+            catch(Exception err)
+            {
+                MessageBox.Show(err.Message);
                 conn.Close();
-                GetRecords();
-                MessageBox.Show("Berhasil Dihapus!");
-                NamaJenisHewanText.Clear();
-                IdJenisHewanText.Clear();
             }
         }
 
         private void TampilDataGrid()
         {
             // Tampil data ke dataGrid
-            MySqlCommand cmd = new MySqlCommand("select ID_JENIS_HEWAN, ID_PEGAWAI, NAMA_JENIS from jenis_hewan", conn);
+            MySqlCommand cmd = new MySqlCommand("select ID_JENIS_HEWAN, NAMA_JENIS from jenis_hewan", conn);
             try
             {
                 //conn.Open();
@@ -201,7 +182,7 @@ namespace Testing02
             //dt.Columns.Add(new DataColumn("Nama_Jenis"));
             //DataView dv = new DataView(dt);
             //dv.RowFilter = string.Format("Select * from jenis_hewan where Nama_Jenis LIKE '%{0}%'", NamaJenisHewanText.Text);
-            MySqlDataAdapter adp = new MySqlDataAdapter("Select ID_JENIS_HEWAN, ID_PEGAWAI, NAMA_JENIS from jenis_hewan where Nama_Jenis LIKE '" + NamaJenisHewanText.Text + "%'", conn);
+            MySqlDataAdapter adp = new MySqlDataAdapter("Select ID_JENIS_HEWAN, NAMA_JENIS from jenis_hewan where Nama_Jenis LIKE '" + NamaJenisHewanText.Text + "%'", conn);
             adp.Fill(dt);
             //DataGrid.Items.Refresh();
             DataGrid.DataContext = dt;
@@ -210,7 +191,7 @@ namespace Testing02
         private void BtnTampil_Click(object sender, RoutedEventArgs e)
         {
             // Tampil data ke dataGrid
-            MySqlCommand cmd = new MySqlCommand("select ID_JENIS_HEWAN, ID_PEGAWAI, NAMA_JENIS from jenis_hewan", conn);
+            MySqlCommand cmd = new MySqlCommand("select ID_JENIS_HEWAN, NAMA_JENIS from jenis_hewan", conn);
             try
             {
                 conn.Open();
@@ -228,7 +209,7 @@ namespace Testing02
 
         private void GetRecords()
         {
-            MySqlCommand cmd = new MySqlCommand("select ID_JENIS_HEWAN, ID_PEGAWAI, NAMA_JENIS from jenis_hewan", conn);
+            MySqlCommand cmd = new MySqlCommand("select ID_JENIS_HEWAN, NAMA_JENIS from jenis_hewan", conn);
             DataGrid.Items.Refresh();
             conn.Open();
             DataTable dt = new DataTable();

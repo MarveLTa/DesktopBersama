@@ -38,16 +38,6 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="ID Pegawai" Margin="10 10" VerticalAlignment="Center" FontSize="20"/>
-                        <ComboBox x:Name="ComboBoxIdPegawai" Margin="10 10" Grid.Column="1">
-                        </ComboBox>
-                    </Grid>
-
-                    <Grid Height="50">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="ID Customer" Margin="10 10" VerticalAlignment="Center" FontSize="20"/>
                         <ComboBox x:Name="ComboBoxIdCustomer" Margin="10 10" Grid.Column="1">
                         </ComboBox>
@@ -60,6 +50,15 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="Nama Hewan" Margin="10 10" VerticalAlignment="Center" FontSize="20"/>
                         <TextBox x:Name="NamaHewanText" Grid.Column="1" Margin="10 10" Padding="2" VerticalAlignment="Center" TextChanged="NamaHewanText_TextChanged"/>
+                    </Grid>
+
+                    <Grid Height="60">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Tanggal Lahir" Margin="10 10" VerticalAlignment="Center" FontSize="20"/>
+                        <DatePicker Grid.Column="1" x:Name="DatePickTglLahir" Margin="5 5"></DatePicker>
                     </Grid>
 
                     <Grid Height="50">

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Testing02"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="TestUiDashboardFix" Height="1000" Width="1200" WindowStartupLocation="CenterScreen" WindowStyle="None">
+        Title="TestUiDashboardFix" Height="900" Width="1200" WindowStartupLocation="CenterScreen" WindowStyle="None">
     <Grid Background="#FFEEEEEE" MouseDown="Grid_MouseDown">
         <StackPanel VerticalAlignment="Top" Background="Orange">
             <Grid Background="#FF0069CE" Height="20"/>
@@ -61,6 +61,12 @@
             </StackPanel>
         </Grid>
         <Grid Width="250" HorizontalAlignment="Left" Background="LightGray">
+            
+            <Grid Height="75" VerticalAlignment="Top">
+                <Border Background="Orange">
+                <TextBlock Text="ADMIN" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </Border>
+            </Grid>
             <materialDesign:TransitioningContent x:Name="TransitioningContentSlide" OpeningEffect="{materialDesign:TransitionEffect SlideInFromLeft, Duration=0:0:0.2}">
                 <Grid x:Name="GridCursor" Margin="0 100 0 0" Width="10" Background="#FF0069CE" HorizontalAlignment="left" Height="60" VerticalAlignment="Top"></Grid>
             </materialDesign:TransitioningContent>
@@ -93,11 +99,25 @@
                         <TextBlock Text="Customer" FontSize="25" VerticalAlignment="Center" Margin="20 0"/>
                     </StackPanel>
                 </ListViewItem>
+                <!-- Pegawai -->
+                <ListViewItem Height="60">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="CardMembership" Width="30" Height="30" VerticalAlignment="Center" Margin="5"/>
+                        <TextBlock Text="Pegawai" FontSize="25" VerticalAlignment="Center" Margin="20 0"/>
+                    </StackPanel>
+                </ListViewItem>
                 <!-- Supplier -->
                 <ListViewItem Height="60">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="BoxUp" Width="30" Height="30" VerticalAlignment="Center" Margin="5"/>
                         <TextBlock Text="Supplier" FontSize="25" VerticalAlignment="Center" Margin="20 0"/>
+                    </StackPanel>
+                </ListViewItem>
+                <!-- Logout -->
+                <ListViewItem Height="60">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Logout" Width="30" Height="30" VerticalAlignment="Center" Margin="5"/>
+                        <TextBlock Text="Logout" FontSize="25" VerticalAlignment="Center" Margin="20 0"/>
                     </StackPanel>
                 </ListViewItem>
             </ListView>

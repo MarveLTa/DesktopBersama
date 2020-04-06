@@ -37,7 +37,6 @@ namespace Testing02
                 connection = "Server=localhost; User Id=root;Password=;Database=petshop;Allow Zero Datetime=True";
                 conn = new MySqlConnection(connection);
                 conn.Open();
-                FillComboBoxPegawai();
                 FillComboBoxJenisHewan();
                 FillComboBoxCustomer();
                 TampilDataGrid();
@@ -64,31 +63,6 @@ namespace Testing02
                     int idJenis = reader.GetInt32("ID_JENIS_HEWAN");
                     string namaJenis = reader.GetString("NAMA_JENIS");
                     ComboBoxIdJenisHewan.Items.Add(idJenis + " - " + namaJenis);
-                    // ComboBoxIdPegawai.Items.Add(idPegawai);
-                }
-                reader.Close();
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(err.Message);
-            }
-        }
-
-        public void FillComboBoxPegawai()
-        {
-            // Ambil ID Pegawai dan Nama Pegawai dari tabel pegawai ke combobox
-            string Query = "select ID_PEGAWAI, NAMA_PEGAWAI from petshop.pegawai;";
-            MySqlCommand cmdComboBox = new MySqlCommand(Query, conn);
-            MySqlDataReader reader;
-            try
-            {
-                reader = cmdComboBox.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    int idPegawai = reader.GetInt32("ID_PEGAWAI");
-                    string namaPegawai = reader.GetString("NAMA_PEGAWAI");
-                    ComboBoxIdPegawai.Items.Add(idPegawai + " - " + namaPegawai);
                     // ComboBoxIdPegawai.Items.Add(idPegawai);
                 }
                 reader.Close();
@@ -129,7 +103,7 @@ namespace Testing02
             //Fungsi untuk mencari hewan sesuai nama
 
             DataTable dt = new DataTable();
-            MySqlDataAdapter adp = new MySqlDataAdapter("Select ID_HEWAN, ID_JENIS_HEWAN, ID_PEGAWAI, ID_CUSTOMER, NAMA_HEWAN from hewan where Nama_Hewan LIKE '" + NamaHewanText.Text + "%'", conn);
+            MySqlDataAdapter adp = new MySqlDataAdapter("Select ID_HEWAN, ID_JENIS_HEWAN, ID_CUSTOMER, NAMA_HEWAN, TANGGALLAHIR_HEWAN from hewan where Nama_Hewan LIKE '" + NamaHewanText.Text + "%'", conn);
             adp.Fill(dt);
             //DataGrid.Items.Refresh();
             DataGrid.DataContext = dt;
@@ -141,17 +115,17 @@ namespace Testing02
             DataRowView selected_row = gd.SelectedItem as DataRowView;
             if (selected_row != null)
             {
-                ComboBoxIdPegawai.SelectedValue = selected_row["ID_PEGAWAI"];
-                ComboBoxIdCustomer.SelectedValue = selected_row["ID_CUSTOMER"];
-                ComboBoxIdJenisHewan.SelectedValue = selected_row["ID_JENIS_HEWAN"];
-                NamaHewanText.Text = selected_row["NAMA_HEWAN"].ToString();
                 IdHewanText.Text = selected_row["ID_HEWAN"].ToString();
+                ComboBoxIdJenisHewan.Text = selected_row["ID_JENIS_HEWAN"].ToString();
+                ComboBoxIdCustomer.Text = selected_row["ID_CUSTOMER"].ToString();
+                NamaHewanText.Text = selected_row["NAMA_HEWAN"].ToString();
+                DatePickTglLahir.Text = selected_row["TANGGALLAHIR_HEWAN"].ToString();
             }
         }
 
         private void GetRecords()
         {
-            MySqlCommand cmd = new MySqlCommand("select ID_HEWAN, ID_JENIS_HEWAN, ID_PEGAWAI, ID_CUSTOMER, NAMA_HEWAN from hewan", conn);
+            MySqlCommand cmd = new MySqlCommand("select ID_HEWAN, ID_JENIS_HEWAN, ID_CUSTOMER, NAMA_HEWAN, TANGGALLAHIR_HEWAN from hewan", conn);
             DataGrid.Items.Refresh();
             conn.Open();
             DataTable dt = new DataTable();
@@ -164,7 +138,7 @@ namespace Testing02
         private void TampilDataGrid()
         {
             // Tampil data ke dataGrid
-            MySqlCommand cmd = new MySqlCommand("select ID_HEWAN, ID_JENIS_HEWAN, ID_PEGAWAI, ID_CUSTOMER, NAMA_HEWAN from hewan", conn);
+            MySqlCommand cmd = new MySqlCommand("select ID_HEWAN, ID_JENIS_HEWAN, ID_CUSTOMER, NAMA_HEWAN, TANGGALLAHIR_HEWAN from hewan", conn);
             try
             {
                 //conn.Open();
@@ -187,22 +161,23 @@ namespace Testing02
                 try
                 {
                     conn.Open();
-                    cmd.CommandText = "INSERT INTO HEWAN(ID_JENIS_HEWAN, ID_PEGAWAI, ID_CUSTOMER, NAMA_HEWAN) VALUES(@idjenis, @idpegawai, @idcustomer, @hewan)";
+                    cmd.CommandText = "INSERT INTO HEWAN(ID_JENIS_HEWAN, ID_CUSTOMER, NAMA_HEWAN, TANGGALLAHIR_HEWAN) VALUES(@idjenis, @idcustomer, @hewan, @tanggal)";
                     cmd.CommandType = CommandType.Text;
                     cmd.Connection = conn;
 
+                    string tanggalLahirHewan = DatePickTglLahir.SelectedDate.Value.ToString("yyyy-MM-dd");
+
                     cmd.Parameters.AddWithValue("@idjenis", ComboBoxIdJenisHewan.SelectedValue);
-                    cmd.Parameters.AddWithValue("@idpegawai", ComboBoxIdPegawai.SelectedValue);
                     cmd.Parameters.AddWithValue("@idcustomer", ComboBoxIdCustomer.SelectedValue);
                     cmd.Parameters.AddWithValue("@hewan", NamaHewanText.Text);
+                    cmd.Parameters.AddWithValue("@tanggal", tanggalLahirHewan);
 
 
                     cmd.ExecuteNonQuery();
                     conn.Close();
                     GetRecords();
                     MessageBox.Show("Berhasil ditambahkan");
-                    NamaHewanText.Clear();
-                    // conn.Close();
+                    ClearData();
                 }
                 catch (Exception err)
                 {
@@ -213,47 +188,57 @@ namespace Testing02
 
         private void BtnEdit_Click(object sender, RoutedEventArgs e)
         {
+            conn.Open();
             try
             {
-                conn.Open();
                 ds = new DataSet();
-                adapter = new MySqlDataAdapter("update hewan set ID_JENIS_HEWAN = '" + ComboBoxIdJenisHewan.SelectedValue + "', ID_PEGAWAI = '" + ComboBoxIdPegawai.SelectedValue + "', ID_CUSTOMER = '" + ComboBoxIdCustomer.SelectedValue + "', NAMA_HEWAN = '" + NamaHewanText.Text + "'where ID_HEWAN = '" + IdHewanText.Text + "'", conn);
+
+                string tanggalLahirHewan = DatePickTglLahir.SelectedDate.Value.ToString("yyyy-MM-dd");
+
+                adapter = new MySqlDataAdapter("update hewan set ID_JENIS_HEWAN = '" + ComboBoxIdJenisHewan.SelectedValue + "', ID_CUSTOMER = '" + ComboBoxIdCustomer.SelectedValue + "', NAMA_HEWAN = '" + NamaHewanText.Text + "', TANGGALLAHIR_HEWAN = '" + tanggalLahirHewan +"' where ID_HEWAN = '" + IdHewanText.Text + "'", conn);
                 adapter.Fill(ds, "hewan");
                 conn.Close();
                 GetRecords();
                 MessageBox.Show("Berhasil Diedit!");
-                NamaHewanText.Clear();
-                IdHewanText.Clear();
+                ClearData();
             }
             catch (Exception err)
             {
                 MessageBox.Show(err.Message);
+                conn.Close();
             }
         }
 
         private void BtnHapus_Click(object sender, RoutedEventArgs e)
         {
-            using (MySqlCommand cmd = new MySqlCommand())
+            conn.Open();
+            try
             {
-                conn.Open();
-                cmd.CommandText = "DELETE FROM HEWAN WHERE ID_HEWAN = @idhewan";
-                cmd.CommandType = CommandType.Text;
-                cmd.Connection = conn;
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.CommandText = "DELETE FROM HEWAN WHERE ID_HEWAN = @idhewan";
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Connection = conn;
 
-                cmd.Parameters.AddWithValue("@idhewan", IdHewanText.Text);
-                cmd.ExecuteNonQuery();
+                    cmd.Parameters.AddWithValue("@idhewan", IdHewanText.Text);
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                    GetRecords();
+                    MessageBox.Show("Berhasil Dihapus!");
+                    ClearData();
+                }
+            }
+            catch(Exception err)
+            {
+                MessageBox.Show(err.Message);
                 conn.Close();
-                GetRecords();
-                MessageBox.Show("Berhasil Dihapus!");
-                NamaHewanText.Clear();
-                IdHewanText.Clear();
             }
         }
 
         private void BtnTampil_Click(object sender, RoutedEventArgs e)
         {
             // Tampil data ke dataGrid
-            MySqlCommand cmd = new MySqlCommand("select ID_HEWAN, ID_JENIS_HEWAN, ID_PEGAWAI, ID_CUSTOMER, NAMA_HEWAN from hewan", conn);
+            MySqlCommand cmd = new MySqlCommand("select ID_HEWAN, ID_JENIS_HEWAN, ID_CUSTOMER, NAMA_HEWAN, TANGGALLAHIR_HEWAN from hewan", conn);
             try
             {
                 conn.Open();
@@ -262,11 +247,21 @@ namespace Testing02
                 conn.Close();
 
                 DataGrid.DataContext = dt;
+                ClearData();
             }
             catch (MySqlException d)
             {
                 MessageBox.Show(d.Message);
             }
+        }
+
+        private void ClearData()
+        {
+            ComboBoxIdCustomer.SelectedIndex = -1;
+            ComboBoxIdJenisHewan.SelectedIndex = -1;
+            IdHewanText.Clear();
+            NamaHewanText.Clear();
+            DatePickTglLahir.SelectedDate = null;
         }
     }
 }

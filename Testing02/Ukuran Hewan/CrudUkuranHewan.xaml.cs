@@ -38,7 +38,6 @@ namespace Testing02
                 connection = "Server=localhost; User Id=root;Password=;Database=petshop;Allow Zero Datetime=True";
                 conn = new MySqlConnection(connection);
                 conn.Open();
-                FillComboBox();
                 TampilDataGrid();
                 conn.Close();
             }
@@ -47,40 +46,13 @@ namespace Testing02
                 MessageBox.Show(e.Message, "Warning");
             }
         }
-
-        public void FillComboBox()
-        {
-            // Ambil ID Pegawai dan Nama Pegawai dari tabel pegawai ke combobox
-            string Query = "select ID_PEGAWAI, NAMA_PEGAWAI from petshop.pegawai;";
-            MySqlCommand cmdComboBox = new MySqlCommand(Query, conn);
-            MySqlDataReader reader;
-            try
-            {
-                reader = cmdComboBox.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    int idPegawai = reader.GetInt32("ID_PEGAWAI");
-                    string namaPegawai = reader.GetString("NAMA_PEGAWAI");
-                    ComboBoxIdPegawai.Items.Add(idPegawai + " - " + namaPegawai);
-                   // ComboBoxIdPegawai.Items.Add(idPegawai);
-                }
-                reader.Close();
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(err.Message);
-            }
-        }
-
+  
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             DataGrid gd = (DataGrid)sender;
             DataRowView selected_row = gd.SelectedItem as DataRowView;
             if (selected_row != null)
             {
-                ComboBoxIdPegawai.Items.Add(selected_row["ID_PEGAWAI"]);
-                //ComboBoxIdPegawai.SelectedValue = selected_row["ID_PEGAWAI"];
                 ComboBoxUkuranHewan.SelectedValue = selected_row["NAMA_UKURAN"];
                 IdUkuranHewanText.Text = selected_row["ID_UKURAN_HEWAN"].ToString();
             }
@@ -88,7 +60,7 @@ namespace Testing02
 
         private void GetRecords()
         {
-            MySqlCommand cmd = new MySqlCommand("select ID_UKURAN_HEWAN, ID_PEGAWAI, NAMA_UKURAN from ukuran_hewan", conn);
+            MySqlCommand cmd = new MySqlCommand("select ID_UKURAN_HEWAN, NAMA_UKURAN from ukuran_hewan", conn);
             DataGrid.Items.Refresh();
             conn.Open();
             DataTable dt = new DataTable();
@@ -101,7 +73,7 @@ namespace Testing02
         private void TampilDataGrid()
         {
             // Tampil data ke dataGrid
-            MySqlCommand cmd = new MySqlCommand("select ID_UKURAN_HEWAN, ID_PEGAWAI, NAMA_UKURAN from ukuran_hewan", conn);
+            MySqlCommand cmd = new MySqlCommand("select ID_UKURAN_HEWAN, NAMA_UKURAN from ukuran_hewan", conn);
             try
             {
                 //conn.Open();
@@ -124,20 +96,25 @@ namespace Testing02
                 try
                 {
                     conn.Open();
-                    cmd.CommandText = "INSERT INTO UKURAN_HEWAN(ID_PEGAWAI, NAMA_UKURAN) VALUES(@idpegawai,@ukuran)";
+                    cmd.CommandText = "INSERT INTO UKURAN_HEWAN(NAMA_UKURAN) VALUES(@ukuran)";
                     cmd.CommandType = CommandType.Text;
                     cmd.Connection = conn;
 
                     string ukuran = ((ComboBoxItem)ComboBoxUkuranHewan.SelectedItem).Content.ToString();
-                    cmd.Parameters.AddWithValue("@idpegawai", ComboBoxIdPegawai.SelectedValue);
-                    cmd.Parameters.AddWithValue("@ukuran", ukuran);
-
-
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
-                    GetRecords();
-                    MessageBox.Show("Berhasil ditambahkan");
-                    // conn.Close();
+                    if(ukuran == "" || ukuran == "-- Pilih --")
+                    {
+                        MessageBox.Show("Field tidak boleh kosong", "Warning");
+                        conn.Close();
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@ukuran", ukuran);
+                        cmd.ExecuteNonQuery();
+                        conn.Close();
+                        GetRecords();
+                        MessageBox.Show("Berhasil ditambahkan");
+                    }
+                    
                 }
                 catch (Exception err)
                 {
@@ -152,7 +129,7 @@ namespace Testing02
             {
                 conn.Open();
                 ds = new DataSet();
-                adapter = new MySqlDataAdapter("update ukuran_hewan set ID_PEGAWAI = '" + ComboBoxIdPegawai.SelectedValue + "', NAMA_UKURAN = '" + ComboBoxUkuranHewan.SelectedValue + "'where ID_UKURAN_HEWAN = '" + IdUkuranHewanText.Text + "'", conn);
+                adapter = new MySqlDataAdapter("update ukuran_hewan set NAMA_UKURAN = '" + ComboBoxUkuranHewan.SelectedValue + "'where ID_UKURAN_HEWAN = '" + IdUkuranHewanText.Text + "'", conn);
                 adapter.Fill(ds, "ukuran_hewan");
                 conn.Close();
                 GetRecords();
@@ -186,7 +163,7 @@ namespace Testing02
         private void BtnTampil_Click(object sender, RoutedEventArgs e)
         {
             // Tampil data ke dataGrid
-            MySqlCommand cmd = new MySqlCommand("select ID_UKURAN_HEWAN, ID_PEGAWAI, NAMA_UKURAN from ukuran_hewan", conn);
+            MySqlCommand cmd = new MySqlCommand("select ID_UKURAN_HEWAN, NAMA_UKURAN from ukuran_hewan", conn);
             try
             {
                 conn.Open();
@@ -205,7 +182,7 @@ namespace Testing02
         private void CariUkuranText_TextChanged(object sender, TextChangedEventArgs e)
         {
             DataTable dt = new DataTable();
-            MySqlDataAdapter adp = new MySqlDataAdapter("select ID_UKURAN_HEWAN, ID_PEGAWAI, NAMA_UKURAN from ukuran_hewan where Nama_Ukuran LIKE '" + CariUkuranText.Text + "%'", conn);
+            MySqlDataAdapter adp = new MySqlDataAdapter("select ID_UKURAN_HEWAN, NAMA_UKURAN from ukuran_hewan where Nama_Ukuran LIKE '" + CariUkuranText.Text + "%'", conn);
             adp.Fill(dt);
             //DataGrid.Items.Refresh();
             DataGrid.DataContext = dt;
