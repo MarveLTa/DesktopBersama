@@ -35,13 +35,13 @@
         <Grid Margin="250 80 0 0">
             <Grid x:Name="GridPrincipal"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <StackPanel>
-                <Grid Height="100">
+                <Grid Height="55">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="BtnBack" Foreground="Black" Background="LightGray" Width="60" HorizontalAlignment="Left" Margin="10" Click="BtnBack_Click">
-                        <materialDesign:PackIcon Kind="ArrowBack" Margin="5"/>
+                    <Button x:Name="BtnBack" Foreground="Black" Background="LightGray" Height="45" Width="60" HorizontalAlignment="Left" Margin="3"  Click="BtnBack_Click">
+                        <materialDesign:PackIcon Kind="ArrowBack" Height="30" Margin="2"/>
                     </Button>
                 </Grid>
                 <Grid Height="100">

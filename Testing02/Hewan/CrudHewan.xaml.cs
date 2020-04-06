@@ -101,7 +101,7 @@ namespace Testing02
         private void NamaHewanText_TextChanged(object sender, TextChangedEventArgs e)
         {
             //Fungsi untuk mencari hewan sesuai nama
-
+            // auto mencari data
             DataTable dt = new DataTable();
             MySqlDataAdapter adp = new MySqlDataAdapter("Select ID_HEWAN, ID_JENIS_HEWAN, ID_CUSTOMER, NAMA_HEWAN, TANGGALLAHIR_HEWAN from hewan where Nama_Hewan LIKE '" + NamaHewanText.Text + "%'", conn);
             adp.Fill(dt);
@@ -237,7 +237,7 @@ namespace Testing02
 
         private void BtnTampil_Click(object sender, RoutedEventArgs e)
         {
-            // Tampil data ke dataGrid
+            // Tampil semua data ke dataGrid
             MySqlCommand cmd = new MySqlCommand("select ID_HEWAN, ID_JENIS_HEWAN, ID_CUSTOMER, NAMA_HEWAN, TANGGALLAHIR_HEWAN from hewan", conn);
             try
             {
@@ -263,5 +263,6 @@ namespace Testing02
             NamaHewanText.Clear();
             DatePickTglLahir.SelectedDate = null;
         }
+
     }
 }

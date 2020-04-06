@@ -67,7 +67,7 @@ namespace Testing02
                     BtnJenisHewan.Visibility = Visibility.Collapsed;
                     BtnUkuranHewan.Visibility = Visibility.Collapsed;
                     BtnHewan.Visibility = Visibility.Collapsed;
-                    GridPrincipal.Children.Add(new CrudJenisHewan());
+                    GridPrincipal.Children.Add(new CrudJasaLayanan());
                     break;
                 case 2:
                     GridPrincipal.Children.Clear();

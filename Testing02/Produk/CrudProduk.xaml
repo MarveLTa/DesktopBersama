@@ -20,7 +20,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Column="0" Text="ID Produk" Margin="10,12,2,11" VerticalAlignment="Center" FontSize="20"/>
+                        <TextBlock Grid.Column="0" Text="ID Produk" Margin="10 10" VerticalAlignment="Center" FontSize="20"/>
                         <TextBox x:Name="IdProdukText" Grid.Column="2" Margin="10 10" Padding="2" VerticalAlignment="Center" IsReadOnly="True"/>
                     </Grid>
 
@@ -67,10 +67,19 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Text="Gambar Produk" Margin="10 10" VerticalAlignment="Center" FontSize="20"/>
-                        <Image x:Name="GambarProduk" Grid.Column="1" Source="{Binding Path = GAMBAR_PRODUK}">
+                        <Image x:Name="GambarProduk" Grid.Column="1">
                             
                         </Image>
                         <Button x:Name="BtnBrowse" Grid.Column="2" Margin="10 10 10 10" Content="Browse" Click="BtnBrowse_Click"></Button>
+                    </Grid>
+
+                    <Grid Height="50">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Lokasi Gambar" Margin="10 10" VerticalAlignment="Center" FontSize="20"/>
+                        <TextBox x:Name="LokasiGambarText" Grid.Column="1" Margin="10 10" Padding="2" VerticalAlignment="Center"/>
                     </Grid>
 
                     <Grid Height="50">
@@ -93,7 +102,17 @@
                 </StackPanel>
             </Grid>
             <Grid Margin="20 50 20 0">
-                <DataGrid x:Name="DataGrid" AutoGenerateColumns="True" ItemsSource="{Binding}" IsReadOnly="True" SelectionChanged="DataGrid_SelectionChanged"/>
+                <DataGrid x:Name="DataGrid" AutoGenerateColumns="True" ItemsSource="{Binding}" IsReadOnly="True" SelectionChanged="DataGrid_SelectionChanged">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Height="30" Width="50" Source="{Binding GAMBAR PRODUK}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </Grid>
         </StackPanel>
     </Grid>

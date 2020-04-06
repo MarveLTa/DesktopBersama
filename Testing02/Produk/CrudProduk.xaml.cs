@@ -32,7 +32,7 @@ namespace Testing02
         private string connection;
         MySqlConnection conn;
         MySqlCommand cmd;
-        
+
         public CrudProduk()
         {
             InitializeComponent();
@@ -41,9 +41,7 @@ namespace Testing02
             {
                 connection = "Server=localhost; User Id=root;Password=;Database=petshop;Allow Zero Datetime=True";
                 conn = new MySqlConnection(connection);
-                conn.Open();
                 TampilDataGrid();
-                conn.Close();
             }
             catch (MySqlException e)
             {
@@ -54,20 +52,33 @@ namespace Testing02
 
         private void TampilDataGrid()
         {
+            conn.Open();
+            ds = new DataSet();
             // Tampil data ke dataGrid
-            MySqlCommand cmd = new MySqlCommand("Select ID_PRODUK as 'ID PRODUK', NAMA_PRODUK, HARGA_PRODUK, JUMLAH_PRODUK, JUMLAH_MINIMUM_PRODUK, GAMBAR_PRODUK from produk", conn);
+            //MySqlCommand cmd = new MySqlCommand("Select ID_PRODUK as 'ID PRODUK', NAMA_PRODUK, HARGA_PRODUK, JUMLAH_PRODUK, JUMLAH_MINIMUM_PRODUK, GAMBAR_PRODUK from produk", conn);
+
+            adapter = new MySqlDataAdapter("Select ID_PRODUK as 'ID PRODUK', NAMA_PRODUK as 'NAMA PRODUK', HARGA_PRODUK as 'HARGA PRODUK', JUMLAH_PRODUK AS 'JUMLAH PRODUK', JUMLAH_MINIMUM_PRODUK AS 'JUMLAH MINIMUM PRODUK', GAMBAR_PRODUK AS 'GAMBAR PRODUK' from produk", conn);
             try
             {
+                adapter.Fill(ds, "produk");
+                conn.Close();
+                GetRecords();
                 //conn.Open();
+                /*
+                MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
-                dt.Load(cmd.ExecuteReader());
+                adapter.Fill(dt);
+                DataGrid.ItemsSource = dt.AsDataView();*/
+                //dt.Load(cmd.ExecuteReader());
                 //conn.Close();
 
-                DataGrid.DataContext = dt;
+                //GetRecords();
+                //DataGrid.DataContext = dt;
             }
             catch (MySqlException d)
             {
                 MessageBox.Show(d.Message);
+                conn.Close();
                 return;
             }
         }      
@@ -77,7 +88,7 @@ namespace Testing02
             //Fungsi untuk mencari produk sesuai nama
 
             DataTable dt = new DataTable();
-            MySqlDataAdapter adp = new MySqlDataAdapter("Select ID_PRODUK as 'ID PRODUK', NAMA_PRODUK, HARGA_PRODUK, JUMLAH_PRODUK, JUMLAH_MINIMUM_PRODUK, GAMBAR_PRODUK from produk where Nama_Produk LIKE '" + NamaProdukText.Text + "%'", conn);
+            MySqlDataAdapter adp = new MySqlDataAdapter("Select ID_PRODUK as 'ID PRODUK', NAMA_PRODUK as 'NAMA PRODUK', HARGA_PRODUK as 'HARGA PRODUK', JUMLAH_PRODUK AS 'JUMLAH PRODUK', JUMLAH_MINIMUM_PRODUK AS 'JUMLAH MINIMUM PRODUK', GAMBAR_PRODUK AS 'GAMBAR PRODUK' from produk where Nama_Produk LIKE '" + NamaProdukText.Text + "%'", conn);
             adp.Fill(dt);
             //DataGrid.Items.Refresh();
             DataGrid.DataContext = dt;
@@ -86,6 +97,11 @@ namespace Testing02
 
         private void BtnTambah_Click(object sender, RoutedEventArgs e)
         {
+            byte[] picBytes = null;
+            FileStream fs = new FileStream(this.LokasiGambarText.Text, FileMode.Open, FileAccess.Read);
+            BinaryReader br = new BinaryReader(fs);
+            picBytes = br.ReadBytes((int)fs.Length);
+
             // cek jika inputan bukan angka
             int parsedValue;
             if (!int.TryParse(JumlahProdukText.Text, out parsedValue))
@@ -126,7 +142,7 @@ namespace Testing02
                         cmd.Parameters.AddWithValue("@hargaproduk", HargaProdukText.Text);
                         cmd.Parameters.AddWithValue("@jumlahproduk", JumlahProdukText.Text);
                         cmd.Parameters.AddWithValue("@jumlahminimum", JumlahMinimumProdukText.Text);
-                        cmd.Parameters.AddWithValue("@gambarproduk", GambarProduk);
+                        cmd.Parameters.AddWithValue("@gambarproduk", picBytes);
 
                         //cmd.Parameters.Add("@gambarproduk", MySqlDbType.Blob, ImageBytes.Length).Value = ImageBytes;
 
@@ -152,6 +168,12 @@ namespace Testing02
 
         private void BtnEdit_Click(object sender, RoutedEventArgs e)
         {
+            byte[] picBytes = null;
+            FileStream fs = new FileStream(this.LokasiGambarText.Text, FileMode.Open, FileAccess.Read);
+            BinaryReader br = new BinaryReader(fs);
+            picBytes = br.ReadBytes((int)fs.Length);
+
+            //cek jika inputan bukan angka
             int parsedValue;
             if (!int.TryParse(JumlahProdukText.Text, out parsedValue))
             {
@@ -174,26 +196,40 @@ namespace Testing02
             }
             else
             {
-                try
+                using (MySqlCommand cmd = new MySqlCommand())
                 {
-                    conn.Open();
-                    ds = new DataSet();
-                    adapter = new MySqlDataAdapter("update produk set NAMA_PRODUK = '" + NamaProdukText.Text + "', HARGA_PRODUK ='" + HargaProdukText.Text + "', JUMLAH_PRODUK = '" + JumlahProdukText.Text + "', JUMLAH_MINIMUM_PRODUK = '" + JumlahMinimumProdukText.Text + "', GAMBAR_PRODUK = '" + GambarProduk + "' where ID_PRODUK = '" + IdProdukText.Text + "'", conn);
-                    adapter.Fill(ds, "produk");
-                    conn.Close();
-                    GetRecords();
-                    MessageBox.Show("Berhasil Diedit!");
-                    NamaProdukText.Clear();
-                    IdProdukText.Clear();
-                    HargaProdukText.Clear();
-                    JumlahMinimumProdukText.Clear();
-                    JumlahProdukText.Clear();
-                }
-                catch (Exception err)
-                {
-                    MessageBox.Show(err.Message);
-                    return;
-                }
+                    try
+                    {
+                        conn.Open();
+
+                        cmd.CommandText = "UPDATE produk set NAMA_PRODUK = @namaproduk, HARGA_PRODUK = @hargaproduk, JUMLAH_PRODUK = @jumlahproduk, JUMLAH_MINIMUM_PRODUK = @jumlahminimum, GAMBAR_PRODUK = @gambarproduk WHERE ID_PRODUK = @idproduk";
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Connection = conn;
+
+                        cmd.Parameters.AddWithValue("@idproduk", IdProdukText.Text);
+                        cmd.Parameters.AddWithValue("@namaproduk", NamaProdukText.Text);
+                        cmd.Parameters.AddWithValue("@hargaproduk", HargaProdukText.Text);
+                        cmd.Parameters.AddWithValue("@jumlahproduk", JumlahProdukText.Text);
+                        cmd.Parameters.AddWithValue("@jumlahminimum", JumlahMinimumProdukText.Text);
+                        cmd.Parameters.AddWithValue("@gambarproduk", picBytes);
+
+                        cmd.ExecuteNonQuery();
+                        conn.Close();
+                        GetRecords();
+                        MessageBox.Show("Berhasil Diedit!");
+                        NamaProdukText.Clear();
+                        IdProdukText.Clear();
+                        HargaProdukText.Clear();
+                        JumlahMinimumProdukText.Clear();
+                        JumlahProdukText.Clear();
+                    }
+                    catch (Exception err)
+                    {
+                        MessageBox.Show(err.Message);
+                        conn.Close();
+                        return;
+                    }
+                }                   
             }
         }
 
@@ -222,7 +258,7 @@ namespace Testing02
         private void BtnTampil_Click(object sender, RoutedEventArgs e)
         {
             // Tampil data ke dataGrid
-            MySqlCommand cmd = new MySqlCommand("Select ID_PRODUK as 'ID PRODUK', NAMA_PRODUK, HARGA_PRODUK, JUMLAH_PRODUK, JUMLAH_MINIMUM_PRODUK, GAMBAR_PRODUK from produk", conn);
+            MySqlCommand cmd = new MySqlCommand("Select ID_PRODUK as 'ID PRODUK', NAMA_PRODUK as 'NAMA PRODUK', HARGA_PRODUK as 'HARGA PRODUK', JUMLAH_PRODUK AS 'JUMLAH PRODUK', JUMLAH_MINIMUM_PRODUK AS 'JUMLAH MINIMUM PRODUK', GAMBAR_PRODUK AS 'GAMBAR PRODUK' from produk", conn);
                 try
                 {
                     conn.Open();
@@ -240,7 +276,7 @@ namespace Testing02
 
         private void GetRecords()
         {
-            MySqlCommand cmd = new MySqlCommand("Select ID_PRODUK as 'ID PRODUK', NAMA_PRODUK, HARGA_PRODUK, JUMLAH_PRODUK, JUMLAH_MINIMUM_PRODUK, GAMBAR_PRODUK from produk", conn);
+            MySqlCommand cmd = new MySqlCommand("Select ID_PRODUK as 'ID PRODUK', NAMA_PRODUK as 'NAMA PRODUK', HARGA_PRODUK as 'HARGA PRODUK', JUMLAH_PRODUK AS 'JUMLAH PRODUK', JUMLAH_MINIMUM_PRODUK AS 'JUMLAH MINIMUM PRODUK', GAMBAR_PRODUK AS 'GAMBAR PRODUK' from produk", conn);
             DataGrid.Items.Refresh();
             conn.Open();
             DataTable dt = new DataTable();
@@ -257,10 +293,10 @@ namespace Testing02
             if (selected_row != null)
             {
                 IdProdukText.Text = selected_row["ID PRODUK"].ToString();
-                NamaProdukText.Text = selected_row["NAMA_PRODUK"].ToString();
-                HargaProdukText.Text = selected_row["HARGA_PRODUK"].ToString();
-                JumlahProdukText.Text = selected_row["JUMLAH_PRODUK"].ToString();
-                JumlahMinimumProdukText.Text = selected_row["JUMLAH_MINIMUM_PRODUK"].ToString();
+                NamaProdukText.Text = selected_row["NAMA PRODUK"].ToString();
+                HargaProdukText.Text = selected_row["HARGA PRODUK"].ToString();
+                JumlahProdukText.Text = selected_row["JUMLAH PRODUK"].ToString();
+                JumlahMinimumProdukText.Text = selected_row["JUMLAH MINIMUM PRODUK"].ToString();
 
                 // Gambar
                 //GambarProduk = selected_row["GAMBAR_PRODUK"];
@@ -281,7 +317,7 @@ namespace Testing02
                 //Image newImage = byteArrayToImage(image);
                 //GambarProduk = newImage.Save("GAMBAR_PRODUK");
 
-                byte[] blob = (byte[])selected_row["Gambar_Produk"];
+                byte[] blob = (byte[])selected_row["Gambar Produk"];
                 MemoryStream ms = new MemoryStream();
                 ms.Write(blob, 0, blob.Length);
                 ms.Position = 0;
@@ -334,7 +370,8 @@ namespace Testing02
             try
             {
                 OpenFileDialog op = new OpenFileDialog();
-                op.InitialDirectory = Environment.SpecialFolder.MyPictures.ToString();
+                //op.InitialDirectory = Environment.SpecialFolder.MyPictures.ToString();
+                op.Multiselect = false;
                 op.Title = "Select a picture";
                 op.Filter = "All supported graphics|*.jpg;*.jpeg;*.png|" +
                   "JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|" +
@@ -342,6 +379,8 @@ namespace Testing02
                 if (op.ShowDialog() == true)
                 {
                     GambarProduk.Source = new BitmapImage(new Uri(op.FileName));
+                    string lokasiGambar = op.FileName.ToString();
+                    LokasiGambarText.Text = lokasiGambar;
                     
                     //var imageBuffer = BitmapSourceToByteArray((BitmapSource)GambarProduk.Source);
                     //imageName = op.FileName;
