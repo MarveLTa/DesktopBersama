@@ -66,7 +66,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CrudJasaLayanan.xaml.cs">
+    <Compile Include="Jenis Hewan\CrudJasaLayanan.xaml.cs">
       <DependentUpon>CrudJasaLayanan.xaml</DependentUpon>
     </Compile>
     <Compile Include="Hewan\CrudHewan.xaml.cs">
@@ -96,7 +96,7 @@
     <Compile Include="TestUiDashboardFix.xaml.cs">
       <DependentUpon>TestUiDashboardFix.xaml</DependentUpon>
     </Compile>
-    <Page Include="CrudJasaLayanan.xaml">
+    <Page Include="Jenis Hewan\CrudJasaLayanan.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
